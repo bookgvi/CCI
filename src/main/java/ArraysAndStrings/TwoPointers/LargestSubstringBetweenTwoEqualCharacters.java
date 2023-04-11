@@ -17,13 +17,9 @@ public class LargestSubstringBetweenTwoEqualCharacters {
         Map<Character, Pair<Integer, Integer>> charToDistanceMap = new HashMap<>();
         for (int i = 0; i < len; i += 1) {
             Pair<Integer, Integer> indexes = charToDistanceMap.getOrDefault(s.charAt(i), new Pair<>(i, -1));
-            if (indexes.getSecond() < i) {
-                indexes.setSecond(i);
-            }
+            indexes.setSecond(i);
             charToDistanceMap.put(s.charAt(i), indexes);
-        }
-        for (Map.Entry<Character, Pair<Integer, Integer>> entry : charToDistanceMap.entrySet()) {
-                res = Math.max(res, entry.getValue().getSecond() - entry.getValue().getFirst() - 1);
+            res = Math.max(res, indexes.getSecond() - indexes.getFirst() - 1);
         }
         return res;
     }
