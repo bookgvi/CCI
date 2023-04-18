@@ -66,20 +66,48 @@ public class ListNode {
         return sentinel.getNext();
     }
 
-    public ListNode reverseSubList(ListNode start, ListNode end) {
-        ListNode sentinel = getInstance();
-        ListNode head = this;
-        while (head != null && !Objects.equals(head, start)) {
-            head = head.getNext();
+    public ListNode sort(ListNode ln) {
+        if (ln == null || ln.next == null) {
+            return ln;
         }
-        while (head != null && !Objects.equals(head, end)) {
-            ListNode curHead = sentinel.getNext();
-            ListNode newHead = head;
-            sentinel.setNext(newHead);
-            head = head.getNext();
-            sentinel.getNext().setNext(curHead);
+        ListNode half = half(ln);
+        return merge(sort(ln), sort(half));
+    }
+
+    private ListNode half(ListNode l) {
+        ListNode slow = l.next;
+        if (l.next != null) {
+            ListNode fast = l.next.next;
+            ListNode half = l;
+            while (slow != null && fast != null && fast.next != null) {
+                slow = slow.next;
+                fast = fast.next.next;
+                half = half.next;
+            }
+            half.next = null;
         }
-        return sentinel.getNext();
+        return slow;
+    }
+
+    private ListNode merge(ListNode l1, ListNode l2) {
+        ListNode mergeList = new ListNode(Integer.MIN_VALUE, null);
+        ListNode dummy = mergeList;
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                mergeList.next = l1;
+                l1 = l1.next;
+            } else {
+                mergeList.next = l2;
+                l2 = l2.next;
+            }
+            mergeList = mergeList.next;
+        }
+        if (l1 != null) {
+            mergeList.next = l1;
+        } else if (l2 != null) {
+            mergeList.next = l2;
+        }
+        return dummy.next;
     }
 
     public ListNode from(int[] nums) {

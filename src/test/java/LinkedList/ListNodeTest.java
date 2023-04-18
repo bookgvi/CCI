@@ -61,4 +61,11 @@ public class ListNodeTest {
         ListNode end = ListNode.getInstance();
         start.setVal(2);
     }
+
+    @Test
+    public void sort_test1() {
+        int[] nums = new int[] {3,4,7,2,6,9,78,12,90};
+        ListNode l = ListNode.getInstance().from(nums);
+        ListNode res = l.sort(l);
+    }
 }
