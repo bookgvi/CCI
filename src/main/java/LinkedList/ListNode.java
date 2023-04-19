@@ -1,7 +1,5 @@
 package LinkedList;
 
-import java.util.Objects;
-
 public class ListNode {
     public int val;
     public ListNode next;
@@ -113,7 +111,7 @@ public class ListNode {
     public ListNode from(int[] nums) {
         int len;
         if (nums == null || (len = nums.length) < 1) {
-            throw new RuntimeException("Nothing to convert");
+            return ListNode.getInstance();
         }
         ListNode head = getInstance();
         ListNode next = getInstance();
@@ -135,7 +133,7 @@ public class ListNode {
     public ListNode from(String s) {
         int len;
         if (s == null || (len = s.length()) < 1) {
-            throw new RuntimeException("Nothing to convert");
+            return ListNode.getInstance();
         }
         ListNode head = getInstance();
         ListNode next = getInstance();
