@@ -11,9 +11,17 @@ package LinkedList;
  */
 public class AddTwoNumbersII {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        return addTwoNumbers(l1, l2, true);
+    }
+
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2, boolean isReverse) {
         int extraDigit = 0;
-        ListNode reverseL1 = reverseList(l1);
-        ListNode reverseL2 = reverseList(l2);
+        ListNode reverseL1 = l1;
+        ListNode reverseL2 = l2;
+        if (isReverse) {
+            reverseL1 = reverseList(l1);
+            reverseL2 = reverseList(l2);
+        }
         ListNode reverseAns = new ListNode(Integer.MIN_VALUE, null);
         ListNode dummyReverseAns = reverseAns;
         ListNode prevReverseAns = new ListNode(Integer.MIN_VALUE, reverseAns);
