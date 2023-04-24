@@ -1,5 +1,7 @@
 package ArraysAndStrings.TwoPointers;
 
+import java.util.*;
+
 public class ConcatTwoArraysToOneAloneWithNaturalOrdering {
     public int[] processed(int[] arr1, int[] arr2) {
         arr1 = arr1 == null ? new int[]{} : arr1;
@@ -25,4 +27,25 @@ public class ConcatTwoArraysToOneAloneWithNaturalOrdering {
         }
         return resArr;
     }
+
+    public <T> Set<T> merge(Collection<T> firstCollection, Collection<T> secondCollection) {
+        Set<T> res = new HashSet<>();
+        firstCollection = firstCollection == null ? new HashSet<>() : firstCollection;
+        secondCollection = secondCollection == null ? new HashSet<>() : secondCollection;
+
+        Iterator<T> it1 = firstCollection.iterator();
+        Iterator<T> it2 = secondCollection.iterator();
+        while(it1.hasNext() && it2.hasNext()) {
+            res.add(it1.next());
+            res.add(it2.next());
+        }
+        while(it1.hasNext()) {
+            res.add(it1.next());
+        }
+        while(it2.hasNext()) {
+            res.add(it2.next());
+        }
+        return res;
+    }
+
 }
