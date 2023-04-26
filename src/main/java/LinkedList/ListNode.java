@@ -7,7 +7,7 @@ public class ListNode {
     private ListNode() {
         this(Integer.MIN_VALUE, null);
     }
-    private ListNode(int val) {
+    public ListNode(int val) {
         this(val, null);
     }
 
@@ -15,6 +15,7 @@ public class ListNode {
         this.val = val;
         this.next = next;
     }
+
 
     public static ListNode getInstance() {
         return new ListNode();
