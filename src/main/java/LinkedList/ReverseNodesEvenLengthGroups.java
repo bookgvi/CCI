@@ -33,7 +33,6 @@ public class ReverseNodesEvenLengthGroups {
 
 
     /**
-     *
      * @param head
      * @return
      */
@@ -71,6 +70,62 @@ public class ReverseNodesEvenLengthGroups {
         }
         prev.next = null;
         return reverseHead;
+    }
+
+    public ListNode reverse(ListNode head, int count) {
+        ListNode reverseHead = head;
+        ListNode prev = new ListNode(-1, reverseHead);
+        ListNode next = new ListNode(-1, shift(head, count));
+        int i = 1;
+        while (head != null && i <= count) {
+            ListNode curHead = reverseHead;
+            reverseHead = head;
+            head = head.next;
+            reverseHead.next = curHead;
+            prev = prev.next;
+            i += 1;
+        }
+        prev.next = null;
+        ListNode sentinelForReverse = reverseHead;
+        reverseHead = shift(sentinelForReverse, count - 1);
+        if (reverseHead != null) {
+            reverseHead.next = next.next;
+        }
+        return sentinelForReverse;
+    }
+
+    public ListNode reverse(ListNode head, int start, int end) {
+        ListNode headToReverse = shift(head, start - 1);
+        ListNode last = shift(head, end - start);
+        ListNode reverseHead = headToReverse;
+        ListNode prev = new ListNode(-1, reverseHead);
+        int i = 1;
+        while (headToReverse != null && i <= end - start + 1) {
+            ListNode curHead = reverseHead;
+            reverseHead = headToReverse;
+            headToReverse = headToReverse.next;
+            reverseHead.next = curHead;
+            prev = prev.next;
+        }
+        prev.next = null;
+        ListNode sentinelForReverse = reverseHead;
+        reverseHead = shift(reverseHead, end - start);
+        if (reverseHead != null) {
+            reverseHead.next = last;
+        }
+        if (headToReverse != null) {
+            headToReverse.next = sentinelForReverse;
+        }
+        return head;
+    }
+
+    private ListNode shift(ListNode head, int count) {
+        int i = 1;
+        while (head != null && i <= count) {
+            head = head.next;
+            i += 1;
+        }
+        return head;
     }
 
     private static class Pair {

@@ -7,6 +7,56 @@ import java.util.Iterator;
  * <a href="https://leetcode.com/problems/reverse-linked-list-ii/">...</a>
  */
 public class ReverseLinkedListII {
+    public ListNode reverseBetween(ListNode head, int start, int end) {
+        ListNode headToReverse = split(head, start - 1); // сдвинуть указатель на элелмент, с которого начнется разворачивание коллекции
+        ListNode last = split(head, end); // сдвинуть на элемент, с которого начнется остаток коллекции
+        ListNode reverseHead = headToReverse;
+        ListNode prev = new ListNode(-1, reverseHead);
+        int i = 1;
+        // Развернем коллекцию
+        while (headToReverse != null && i <= end - start + 1) {
+            ListNode curHead = reverseHead;
+            reverseHead = headToReverse;
+            headToReverse = headToReverse.next;
+            reverseHead.next = curHead;
+            prev = prev.next;
+            i += 1;
+        }
+        /*
+        * отрежем от последнего элемента развернутой коллекции циклический остаток
+        * headToReverse или last после разворачивания части общей коллекции будут указывать на след элемент после развернутого блока,
+        * или на null. headToReserve будет null если блок для разворота не оканчивается на последнем элементе общей коллекции
+        * Таким образом можно сразу прилинковать остаток коллекции и избавиться от цикла в развернутой коллекции
+        * */
+        prev.next = headToReverse != null ? headToReverse : last;
+        ListNode endOfFirstPart = start != 1 ? shiftToEnd(head) : null;
+        if (endOfFirstPart != null) {
+            endOfFirstPart.next = reverseHead;
+        } else {
+            head = reverseHead;
+        }
+        return head;
+    }
+
+    private ListNode shiftToEnd(ListNode head) {
+        while (head.next != null) {
+            head = head.next;
+        }
+        return head;
+    }
+
+    private ListNode split(ListNode head, int count) {
+        int i = 1;
+        ListNode prev = new ListNode(-1, head);
+        while (head != null && i <= count) {
+            head = head.next;
+            prev = prev.next;
+            i += 1;
+        }
+        prev.next = null;
+        return head;
+    }
+
     public ListNode reverseBetween1(ListNode head, int left, int right) {
         ListNode sentinelForReverse = new ListNode(Integer.MIN_VALUE, null);
         ListNode dummyForReverse = sentinelForReverse;
@@ -39,7 +89,7 @@ public class ReverseLinkedListII {
         return dummyForHead.next;
     }
 
-    public ListNode reverseBetween(ListNode head, int left, int right) {
+    public ListNode reverseBetween2(ListNode head, int left, int right) {
         ListNode part1 = null;
         ListNode part2;
         ListNode part3;

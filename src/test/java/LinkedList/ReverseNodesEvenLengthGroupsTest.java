@@ -22,4 +22,34 @@ public class ReverseNodesEvenLengthGroupsTest extends AbstractAssertForListNode 
         ListNode res = r.reverseEvenLengthGroups(head);
         assertEquals(ans, res);
     }
+
+    @Test
+    public void reverse_test1() {
+        ListNode head = ListNode.getInstance().from(new int[]{1,2,0,6,5});
+        int k = 1;
+        ListNode ans = ListNode.getInstance().from(new int[]{1,2,0,6,5});
+        ReverseNodesEvenLengthGroups r = new ReverseNodesEvenLengthGroups();
+        ListNode res = r.reverse(head, k);
+        assertEquals(ans, res);
+    }
+
+    @Test
+    public void reverse_test2() {
+        ListNode head = ListNode.getInstance().from(new int[]{1,2,0,6,5});
+        int k = 5;
+        ListNode ans = ListNode.getInstance().from(new int[]{5,6,0,2,1});
+        ReverseNodesEvenLengthGroups r = new ReverseNodesEvenLengthGroups();
+        ListNode res = r.reverse(head, k);
+        assertEquals(ans, res);
+    }
+
+    @Test
+    public void reverse_test3() {
+        ListNode head = ListNode.getInstance().from(new int[]{1,2,0,6,5});
+        int k = 3;
+        ListNode ans = ListNode.getInstance().from(new int[]{0,2,1,6,5});
+        ReverseNodesEvenLengthGroups r = new ReverseNodesEvenLengthGroups();
+        ListNode res = r.reverse(head, k);
+        assertEquals(ans, res);
+    }
 }
