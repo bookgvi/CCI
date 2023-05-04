@@ -23,4 +23,24 @@ public class SwappingNodesLinkedListTest {
         ListNode res = s.swapNodes(head, k);
         assertEquals(ans, res);
     }
+
+    @Test
+    public void swapNodes_test2() {
+        ListNode head = ListNode.getInstance().from(new int[]{90,100});
+        int k = 2;
+        ListNode ans = ListNode.getInstance().from(new int[]{100,90});
+        SwappingNodesLinkedList s = new SwappingNodesLinkedList();
+        ListNode res = s.swapNodes(head, k);
+        assertEquals(ans, res);
+    }
+
+    @Test
+    public void swapNodes_test3() {
+        ListNode head = ListNode.getInstance().from(new int[]{100});
+        int k = 1;
+        ListNode ans = ListNode.getInstance().from(new int[]{100});
+        SwappingNodesLinkedList s = new SwappingNodesLinkedList();
+        ListNode res = s.swapNodes(head, k);
+        assertEquals(ans, res);
+    }
 }

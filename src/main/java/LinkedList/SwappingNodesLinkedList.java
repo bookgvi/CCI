@@ -8,7 +8,7 @@ package LinkedList;
  * from the end (the list is 1-indexed).
  */
 public class SwappingNodesLinkedList {
-    public ListNode swapNodes(ListNode head, int k) {
+    public ListNode swapNodes1(ListNode head, int k) {
         ListNode kNode = head;
         ListNode dummy1 = head;
         int counter = 1;
@@ -32,5 +32,35 @@ public class SwappingNodesLinkedList {
             kNode.val = tmp;
         }
         return dummy2;
+    }
+
+    public ListNode swapNodes(ListNode head, int k) {
+        ListNode kNode = shift(head, k);
+        if (kNode == null) {
+            return null;
+        }
+        ListNode kNodeFromTail = splitFromEnd(head, kNode);
+        int tmp = kNode.val;
+        kNode.val = kNodeFromTail.val;
+        kNodeFromTail.val = tmp;
+        return head;
+    }
+
+    private ListNode shift(ListNode head, int newPos) {
+        int i = 1;
+        while (head != null && i < newPos) {
+            head = head.next;
+            i += 1;
+        }
+        return head;
+    }
+
+    private ListNode splitFromEnd(ListNode head, ListNode kNode) {
+        ListNode dummyKNode = kNode;
+        while(dummyKNode.next != null) {
+            head = head.next;
+            dummyKNode = dummyKNode.next;
+        }
+        return head;
     }
 }
