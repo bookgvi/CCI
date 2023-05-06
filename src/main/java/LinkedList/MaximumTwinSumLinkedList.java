@@ -14,6 +14,43 @@ import java.util.Arrays;
  */
 public class MaximumTwinSumLinkedList {
     public int pairSum(ListNode head) {
+        ListNode[] arrWithListNodes = splitAndReverse(head);
+        ListNode reverseFirstHalf = arrWithListNodes[0];
+        ListNode secondHalf = arrWithListNodes[1];
+        int res = -1;
+        while (secondHalf != null) {
+            res = Math.max(res, secondHalf.val + reverseFirstHalf.val);
+            secondHalf = secondHalf.next;
+            reverseFirstHalf = reverseFirstHalf.next;
+        }
+        return res;
+    }
+
+    /**
+     * Возвращает две половины ListNode при этом первая половина содержит ноды в обратном порядке
+     * @param head - ListNode
+     * @return ListNode[] - size = 2, first elt - 1st half of ListNode with reversal order,
+     *      second elt - 2nd  part of ListNode
+     */
+    private ListNode[] splitAndReverse(ListNode head) {
+        ListNode[] res = new ListNode[2];
+        ListNode sentinelForReverse = head;
+        ListNode next = head.next;
+        ListNode fast = head.next.next;
+        while (fast != null && fast.next != null) {
+            ListNode reverseHead = next;
+            next = next.next;
+            fast = fast.next.next;
+            reverseHead.next = sentinelForReverse;
+            sentinelForReverse = reverseHead;
+        }
+        head.next = null;
+        res[0] = next;
+        res[1] = sentinelForReverse;
+        return res;
+    }
+
+    public int pairSum2(ListNode head) {
         ListNode sentinelForReverse = head;
         ListNode next = head.next;
         ListNode fast = head.next.next;
@@ -32,24 +69,6 @@ public class MaximumTwinSumLinkedList {
             sentinelForReverse = sentinelForReverse.next;
         }
         return res;
-    }
-
-    private ListNode splitAndReverse(ListNode head) {
-        if (head == null || head.next == null) {
-            return head;
-        }
-        ListNode sentinelForReverse = head;
-        ListNode next = head.next;
-        ListNode fast = head.next.next;
-        while (fast != null && fast.next != null) {
-            ListNode reverseHead = next;
-            next = next.next;
-            fast = fast.next.next;
-            reverseHead.next = sentinelForReverse;
-            sentinelForReverse = reverseHead;
-        }
-        head.next = null;
-        return sentinelForReverse;
     }
 
     public int pairSum1(ListNode head) {
