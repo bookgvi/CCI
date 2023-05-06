@@ -8,6 +8,35 @@ package LinkedList;
 public class PalindromeLinkedList {
 
     public boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode reverseHead = head;
+        ListNode slow = head.next;
+        ListNode fast = head.next.next;
+        ListNode next;
+        while (fast != null && fast.next != null) {
+            next = slow;
+            slow = slow.next;
+            next.next = reverseHead;
+            reverseHead = next;
+            fast = fast.next.next;
+        }
+        head.next = null;
+        while (reverseHead != null && slow != null) {
+            if (reverseHead.val != slow.val) {
+                slow = slow.next;
+            }
+            if (slow == null || reverseHead.val != slow.val) {
+                return false;
+            }
+            reverseHead = reverseHead.next;
+            slow = slow.next;
+        }
+        return reverseHead == null && slow == null;
+    }
+
+    public boolean isPalindrome1(ListNode head) {
         if (head == null) {
             return false;
         } else if (head.next == null) {
@@ -51,5 +80,70 @@ public class PalindromeLinkedList {
         }
         sentinelForHead.next = null;
         return dummy;
+    }
+
+    // worse then previous
+    public boolean isPalindrome2(ListNode head) {
+        ListNode middle = getMiddle(head);
+        ListNode reverseMiddle = reverse(middle);
+        while (head != null && reverseMiddle != null) {
+            if (head.val != reverseMiddle.val) {
+                return false;
+            }
+            head = head.next;
+            reverseMiddle = reverseMiddle.next;
+        }
+        return true;
+    }
+
+    private ListNode reverse(ListNode head) {
+        ListNode reverseHead = head;
+        ListNode prev = new ListNode(-1, head);
+        while (head != null) {
+            ListNode curHead = reverseHead;
+            reverseHead = head;
+            head = head.next;
+            reverseHead.next = curHead;
+            prev = prev.next;
+        }
+        prev.next = null;
+        return reverseHead;
+    }
+
+    private ListNode getMiddle(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        int i = 0;
+        ListNode slow = head.next;
+        if (slow == null) {
+            return head;
+        }
+        ListNode fast = head.next.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    private ListNode getMiddleAndReverse(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode reverse = head;
+        ListNode curHead = head;
+        ListNode slow = head.next;
+        ListNode fast = head.next.next;
+        while (fast != null && fast.next != null) {
+            ListNode newHead = slow;
+            slow = slow.next;
+            curHead = reverse;
+            newHead.next = curHead;
+            reverse = newHead;
+            fast = fast.next.next;
+        }
+        head.next = null;
+        return slow;
     }
 }

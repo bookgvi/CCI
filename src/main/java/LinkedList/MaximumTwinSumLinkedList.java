@@ -14,6 +14,45 @@ import java.util.Arrays;
  */
 public class MaximumTwinSumLinkedList {
     public int pairSum(ListNode head) {
+        ListNode sentinelForReverse = head;
+        ListNode next = head.next;
+        ListNode fast = head.next.next;
+        while (fast != null && fast.next != null) {
+            ListNode reverseHead = next;
+            next = next.next;
+            fast = fast.next.next;
+            reverseHead.next = sentinelForReverse;
+            sentinelForReverse = reverseHead;
+        }
+        head.next = null;
+        int res = -1;
+        while (next != null) {
+            res = Math.max(res, next.val + sentinelForReverse.val);
+            next = next.next;
+            sentinelForReverse = sentinelForReverse.next;
+        }
+        return res;
+    }
+
+    private ListNode splitAndReverse(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode sentinelForReverse = head;
+        ListNode next = head.next;
+        ListNode fast = head.next.next;
+        while (fast != null && fast.next != null) {
+            ListNode reverseHead = next;
+            next = next.next;
+            fast = fast.next.next;
+            reverseHead.next = sentinelForReverse;
+            sentinelForReverse = reverseHead;
+        }
+        head.next = null;
+        return sentinelForReverse;
+    }
+
+    public int pairSum1(ListNode head) {
         ListNode reverseHead = head;
         ListNode slow = head.next;
         ListNode fast = head.next.next;

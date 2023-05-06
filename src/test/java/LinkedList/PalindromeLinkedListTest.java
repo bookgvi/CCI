@@ -80,5 +80,13 @@ public class PalindromeLinkedListTest {
         Assert.assertTrue(p.isPalindrome(head));
     }
 
+    @Test
+    public void isPalindrome_test8() {
+        int[] nums = new int[]{1,1,2,1};
+        PalindromeLinkedList p = new PalindromeLinkedList();
+        ListNode head = p.from(nums);
+        Assert.assertFalse(p.isPalindrome(head));
+    }
+
 
 }
