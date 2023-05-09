@@ -13,6 +13,17 @@ import java.util.Set;
  */
 public class FindDuplicateNumber {
     public int findDuplicate(int[] nums) {
+        boolean[] tmp = new boolean[nums.length];
+        for (int n : nums) {
+            if (tmp[n]) {
+                return n;
+            }
+            tmp[n] = true;
+        }
+        return -1;
+    }
+
+    public int findDuplicate3(int[] nums) {
         int slow = nums[0], fast = nums[0];
         do {
             slow = nums[slow];
