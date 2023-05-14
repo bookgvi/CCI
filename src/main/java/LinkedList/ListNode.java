@@ -52,6 +52,18 @@ public class ListNode {
         return secondHalf;
     }
 
+    public ListNode reverse(ListNode head) {
+        ListNode reverse = null;
+        ListNode h = head;
+        while (h != null) {
+            ListNode newHead = h;
+            h = h.next;
+            newHead.next = reverse;
+            reverse = newHead;
+        }
+        return reverse;
+    }
+
     public ListNode reverse() {
         ListNode sentinel = getInstance();
         ListNode ll = this;
@@ -152,5 +164,16 @@ public class ListNode {
             }
         }
         return head;
+    }
+
+    public ListNode from(int n, boolean isReverse) {
+        ListNode res = null;
+        while (n % 10 != 0) {
+            ListNode l = new ListNode(n % 10);
+            l.next = res;
+            res = l;
+            n /= 10;
+        }
+        return isReverse ? reverse(res) : res;
     }
 }
