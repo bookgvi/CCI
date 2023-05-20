@@ -1,21 +1,20 @@
 package Concurrency.getFactorization;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CountTheoryServlet {
-    private int counter = 0;
+    private int cacheUse = 0;
     private final Map<Integer, Integer[]> factorizeLocalCache = new HashMap<>();
 
-    private FactorizeCache factorizeCache = null;
+    private LastFactorizeCache lastFactorizeCache = new LastFactorizeCache(null, null);
+    private ImmutableFactorizeCache immutableFactorizeCache = new ImmutableFactorizeCache(null, null);
 
     public Integer[] doGetFactorize(int n) {
         Integer[] currentFactorize = null;
         synchronized (this) {
-            counter += 1;
             if (factorizeLocalCache.get(n) != null) {
+                cacheUse += 1;
                 currentFactorize = factorizeLocalCache.get(n).clone();
             }
         }
@@ -28,8 +27,8 @@ public class CountTheoryServlet {
         return currentFactorize;
     }
 
-    public synchronized int getCounter() {
-        return counter;
+    public synchronized int getCacheUse() {
+        return cacheUse;
     }
 
     public synchronized Set<Integer> getCacheNumbers() {
@@ -38,27 +37,56 @@ public class CountTheoryServlet {
 
 
     public Integer[] doGetFactorize2(int n) {
-        if (factorizeCache == null) {
-            factorizeCache = new FactorizeCache(n, Factorize.proceed(n));
+        Integer[] fact = lastFactorizeCache.getFact(n);
+        if (fact != null) {
+            System.out.print("From cache: ");
+        } else {
+            fact = Factorize.proceed(n);
+            lastFactorizeCache = new LastFactorizeCache(n, fact.clone());
         }
-        return factorizeCache.getFact();
+        return fact;
     }
 
-    private static class FactorizeCache {
-        private int n;
-        private Integer[] fact;
 
-        FactorizeCache(Integer[] fact) {
-            this.fact = fact;
+    public Integer[] doGetFactorize3(int n) {
+        Integer[] fact = immutableFactorizeCache.getFact(n);
+        if (fact != null) {
+            System.out.print("From cache: ");
+        } else {
+            fact = Factorize.proceed(n);
+            immutableFactorizeCache = new ImmutableFactorizeCache(n, fact.clone());
         }
+        return fact;
+    }
 
-        FactorizeCache(int n, Integer[] fact) {
+    private static class LastFactorizeCache {
+        private final Integer n;
+        private final Integer[] fact;
+
+        LastFactorizeCache(Integer n, Integer[] fact) {
             this.n = n;
             this.fact = fact;
         }
 
-        Integer[] getFact() {
-            return fact;
+        Integer[] getFact(int n) {
+            if (Objects.equals(this.n, n)) {
+                return fact.clone();
+            }
+            return null;
+        }
+    }
+
+    private static class ImmutableFactorizeCache {
+        private final Map<Integer, Integer[]> cache = new ConcurrentHashMap<>();
+
+        ImmutableFactorizeCache(Integer n, Integer[] fact) {
+            if (n != null) {
+                cache.putIfAbsent(n, fact);
+            }
+        }
+
+        Integer[] getFact(int n) {
+            return cache.computeIfPresent(n, (k, factArr) -> factArr.clone());
         }
     }
 }
