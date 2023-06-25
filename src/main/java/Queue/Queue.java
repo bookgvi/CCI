@@ -15,10 +15,19 @@ public class Queue<E> {
         }
         return res;
     }
+
     public E poll() {
         return queue.size() > 0 ? queue.poll() : null;
     }
+
     public int size() {
         return queue.size();
+    }
+
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+    public boolean isNotEmpty() {
+        return !isEmpty();
     }
 }
