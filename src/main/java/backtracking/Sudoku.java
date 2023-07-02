@@ -1,5 +1,8 @@
 package backtracking;
 
+/**
+ * <a href="https://leetcode.com/problems/sudoku-solver/description/">...</a>
+ */
 public class Sudoku {
     int[][] storedCells = new int[81][2];
     int counter = 0;
@@ -50,7 +53,7 @@ public class Sudoku {
     }
 
     private boolean isValid(char[][] board, int row, int col, char digit) {
-        return canPlaceInSmallSquare(board, row, col, digit) && canPlaceInRowAndCol(board, row, col, digit);
+        return !isFinish && canPlaceInSmallSquare(board, row, col, digit) && canPlaceInRowAndCol(board, row, col, digit);
     }
 
     private boolean canPlaceInRowAndCol(char[][] board, int row, int col, char digit) {
@@ -64,7 +67,7 @@ public class Sudoku {
                 return false;
             }
         }
-        return true;
+        return !isFinish;
     }
 
     private boolean canPlaceInSmallSquare(char[][] board, int row, int col, char digit) {
