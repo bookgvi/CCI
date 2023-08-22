@@ -1,5 +1,7 @@
 package stack.genericStack;
 
+import java.util.Objects;
+
 /**
  * Thread safe stack based on LinkedList
  * @param <T>
@@ -21,16 +23,19 @@ public class Stack<T> implements IStack<T> {
     public synchronized void push(T val) throws StackOverflowException {
         if (val == null) {
             throw new IllegalStateException("bad value");
-        }
-        if (size >= MAX_SIZE) {
+        } else if (size >= MAX_SIZE) {
             throw new StackOverflowException("Max size limit exceed");
+        } else {
+            head = new ListNode<T>(val, head);
+            size += 1;
         }
-        head = new ListNode<T>(val, head);
-        size += 1;
     }
 
     @Override
     public synchronized T pop() {
+        if (size == 0 || MAX_SIZE == 0) {
+            return null;
+        }
         T val = head != null ? head.getVal() : null;
         head = head != null ? head.getNext() : null;
         size -= 1;
@@ -43,5 +48,45 @@ public class Stack<T> implements IStack<T> {
     @Override
     public synchronized int size() {
         return this.size;
+    }
+
+    public synchronized void reverse() {
+        ListNode<T> newHead = null;
+        while (head != null) {
+            ListNode<T> next = head.next;
+            head.next = newHead;
+            newHead = head;
+            head = next;
+        }
+        head = newHead;
+    }
+
+    /**
+     * 0 index nearest position of element in the stack
+     *
+     * @param val find this value
+     * @return position number of value or -1
+     */
+    public synchronized int find(T val) {
+        int pos = -1;
+        ListNode<T> sentinel = new ListNode<>(null, head);
+        while (head != null) {
+            pos += 1;
+            if (Objects.equals(val, head.getVal())) {
+                head = sentinel.next;
+                return pos;
+            }
+            head = head.next;
+        }
+        pos = pos == size - 1 ? -1 : pos;
+        head = sentinel.next;
+        return pos;
+    }
+
+    public synchronized T peek() {
+        if (size == 0 || MAX_SIZE == 0) {
+            return null;
+        }
+        return head.getVal();
     }
 }
