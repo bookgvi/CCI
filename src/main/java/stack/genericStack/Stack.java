@@ -19,6 +19,25 @@ public class Stack<T> implements IStack<T> {
         this.MAX_SIZE = size;
     }
 
+    /**
+     * Immutable node for LinkedList
+     * @param <T>
+     */
+    private static class ListNode<T> {
+        T val;
+        ListNode<T> next;
+
+        ListNode(T val) {
+            this(val, null);
+        }
+
+        ListNode(T val, ListNode<T> next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
+
     @Override
     public synchronized void push(T val) throws StackOverflowException {
         if (val == null) {
@@ -36,8 +55,8 @@ public class Stack<T> implements IStack<T> {
         if (size == 0 || MAX_SIZE == 0) {
             return null;
         }
-        T val = head != null ? head.getVal() : null;
-        head = head != null ? head.getNext() : null;
+        T val = head != null ? head.val : null;
+        head = head != null ? head.next : null;
         size -= 1;
         if (size < 0) {
             size = 0;
@@ -72,7 +91,7 @@ public class Stack<T> implements IStack<T> {
         ListNode<T> sentinel = new ListNode<>(null, head);
         while (head != null) {
             pos += 1;
-            if (Objects.equals(val, head.getVal())) {
+            if (Objects.equals(val, head.val)) {
                 head = sentinel.next;
                 return pos;
             }
@@ -87,6 +106,6 @@ public class Stack<T> implements IStack<T> {
         if (size == 0 || MAX_SIZE == 0) {
             return null;
         }
-        return head.getVal();
+        return head.val;
     }
 }
