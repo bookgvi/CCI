@@ -108,4 +108,19 @@ public class Stack<T> implements IStack<T> {
         }
         return head.val;
     }
+
+    public synchronized T peek(int index) {
+        if (size == 0 || MAX_SIZE == 0 || index >= size || index < 0) {
+            return null;
+        }
+        ListNode<T> sentinel = new ListNode<>(null, head);
+        int i = 0;
+        while (i < index && head.next != null) {
+            head = head.next;
+            i += 1;
+        }
+        T res = head.val;
+        head = sentinel.next;
+        return res;
+    }
 }

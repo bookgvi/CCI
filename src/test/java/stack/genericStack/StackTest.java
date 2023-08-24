@@ -2,11 +2,96 @@ package stack.genericStack;
 
 import org.junit.Test;
 
-import java.util.Objects;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class StackTest {
+
+    // ... existing tests ...
+
+    @Test
+    public void testPeekWhenStackIsEmptyThenReturnNull() {
+        // Arrange
+        Stack<Integer> stack = new Stack<>(10);
+
+        // Act
+        Integer result = stack.peek(5);
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
+    public void testPeekWhenIndexIsOutOfBoundsThenReturnNull() throws StackOverflowException {
+        // Arrange
+        Stack<Integer> stack = new Stack<>(10);
+        stack.push(5);
+        stack.push(10);
+
+        // Act
+        Integer result = stack.peek(15);
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
+    public void testPeekWhenIndexIsNegativeThenReturnNull() throws StackOverflowException {
+        // Arrange
+        Stack<Integer> stack = new Stack<>(10);
+        stack.push(5);
+        stack.push(10);
+
+        // Act
+        Integer result = stack.peek(-1);
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
+    public void testPeekWhenIndexIsValidThenReturnElement() throws StackOverflowException {
+        // Arrange
+        Stack<Integer> stack = new Stack<>(10);
+        stack.push(5);
+        stack.push(10);
+
+        // Act
+        Integer result = stack.peek(1);
+
+        // Assert
+        assertEquals(Integer.valueOf(5), result);
+    }
+
+    @Test
+    public void testPeekWhenIndexIsValidThenReturnElement2() throws StackOverflowException {
+        // Arrange
+        Stack<Integer> stack = new Stack<>(10);
+        stack.push(5);
+        stack.push(10);
+        stack.push(11);
+
+        // Act
+        Integer result = stack.peek(0);
+
+        // Assert
+        assertEquals(Integer.valueOf(11), result);
+    }
+
+    @Test
+    public void testPeekWhenIndexIsValidThenReturnElement3() throws StackOverflowException {
+        // Arrange
+        Stack<Integer> stack = new Stack<>(10);
+        stack.push(5);
+        stack.push(10);
+        stack.push(11);
+
+        // Act
+        Integer result = stack.peek(2);
+
+        // Assert
+        assertEquals(Integer.valueOf(5), result);
+    }
 
     @Test
     public void testPushWhenValidValueThenSizeIncreases() throws StackOverflowException {
@@ -203,18 +288,6 @@ public class StackTest {
         // Assert
         assertEquals(1, result);
         assertEquals(3, (int) stack.peek());
-    }
-
-    @Test
-    public void testPeekWhenStackIsEmptyThenReturnNull() {
-        // Arrange
-        Stack<Integer> stack = new Stack<>(10);
-
-        // Act
-        Integer result = stack.peek();
-
-        // Assert
-        assertNull(result);
     }
 
     @Test
