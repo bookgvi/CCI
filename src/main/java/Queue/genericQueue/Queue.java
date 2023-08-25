@@ -69,6 +69,14 @@ public class Queue<T> implements IQueue<T> {
                 : null;
     }
 
+    public T getLast() {
+        T val = null;
+        if (tail != null) {
+            val = tail.val;
+        }
+        return val;
+    }
+
     private void decSize() {
         size = Math.max(size - 1, 0);
     }

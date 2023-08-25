@@ -22,4 +22,13 @@ public class GraphV2Test {
         g.displayCycle();
         g.displayTopoSort();
     }
+
+    @Test
+    public void testBFS() {
+//        int[][] graph = {{3,4},{4,2},{1,3},{0,2},{0,1}}; // pentagramm
+        int[][] graph = {{1,2},{3,0},{0,4},{4,1},{2,3}}; // pentaedr
+        GraphV2 g = GraphV2.INSTANCE;
+        g.setG(graph, 5);
+        g.bfs();
+    }
 }

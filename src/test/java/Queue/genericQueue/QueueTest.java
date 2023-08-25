@@ -113,4 +113,31 @@ public class QueueTest {
         queue.reverse();
         assertTrue(queue.empty());
     }
+
+    @Test
+    public void testGetLastWhenQueueIsEmptyThenReturnNull() {
+        Queue<Integer> queue = new Queue<>();
+        Integer result = queue.getLast();
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetLastWhenQueueHasOneElementThenReturnThatElement() {
+        Queue<Integer> queue = new Queue<>();
+        queue.add(1);
+        Integer result = queue.getLast();
+        assertNotNull(result);
+        assertEquals(Integer.valueOf(1), result);
+    }
+
+    @Test
+    public void testGetLastWhenQueueHasMultipleElementsThenReturnLastElement() {
+        Queue<Integer> queue = new Queue<>();
+        queue.add(1);
+        queue.add(2);
+        queue.add(3);
+        Integer result = queue.getLast();
+        assertNotNull(result);
+        assertEquals(Integer.valueOf(3), result);
+    }
 }

@@ -1,5 +1,7 @@
 package graphUtils;
 
+import Queue.genericQueue.IQueue;
+import Queue.genericQueue.Queue;
 import stack.genericStack.IStack;
 import stack.genericStack.Stack;
 import stack.genericStack.StackOverflowException;
@@ -93,6 +95,36 @@ public class GraphV2 {
         topo.push(v);
     }
 
+    public void bfs(int v) {
+        proceedBFS(v);
+    }
+
+    public void bfs() {
+        proceedBFS(0);
+    }
+
+    private void proceedBFS(int v) {
+        IQueue<Integer> q = new Queue<>();
+        StringBuilder sb = new StringBuilder();
+        reset();
+        q.add(v);
+        while (!q.empty()) {
+            int cur = q.poll();
+            used[cur] = 1;
+            for (int next : g[cur]) {
+                if (used[next] == 0) {
+                    q.add(next);
+                }
+            }
+            sb.append(cur);
+            if (!q.empty()) {
+                sb.append(" -> ");
+            }
+        }
+        System.out.print("BFS: ");
+        System.out.println(sb);
+    }
+
     public void displayCycle() {
         int k = cycleEnd;
         System.out.print("Cycle: ");
@@ -109,7 +141,7 @@ public class GraphV2 {
     public void displayTopoSort() {
         StringBuilder sb = new StringBuilder();
         int index = 0;
-        while(index < topo.size()) {
+        while (index < topo.size()) {
             sb.append(topo.peek(index++));
             if (index < topo.size()) {
                 sb.append(" -> ");
