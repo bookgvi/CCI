@@ -10,4 +10,6 @@ public interface IQueue<T> {
     int size();
 
     boolean empty();
+
+    void reverse();
 }

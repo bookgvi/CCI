@@ -94,4 +94,23 @@ public class QueueTest {
         assertNotEquals(headField.get(queue), tailField.get(queue));
         assertEquals(oldHead, headField.get(queue));
     }
+
+    @Test
+    public void testReverseWhenQueueIsNotEmptyThenElementsAreInReverseOrder() {
+        Queue<Integer> queue = new Queue<>();
+        queue.add(1);
+        queue.add(2);
+        queue.add(3);
+        queue.reverse();
+        assertEquals(Integer.valueOf(3), queue.poll());
+        assertEquals(Integer.valueOf(2), queue.poll());
+        assertEquals(Integer.valueOf(1), queue.poll());
+    }
+
+    @Test
+    public void testReverseWhenQueueIsEmptyThenStateRemainsUnchanged() {
+        Queue<Integer> queue = new Queue<>();
+        queue.reverse();
+        assertTrue(queue.empty());
+    }
 }

@@ -6,7 +6,7 @@ public class Queue<T> implements IQueue<T> {
     private int size = 0;
 
     public Queue() {
-
+        // empty
     }
 
     @Override
@@ -53,6 +53,22 @@ public class Queue<T> implements IQueue<T> {
         return size == 0;
     }
 
+    @Override
+    public void reverse() {
+        ListNode<T> sentinelHead = new ListNode<>(head);
+        ListNode<T> newHead = null;
+        while (head != null) {
+            ListNode<T> next = head.next;
+            head.next = newHead;
+            newHead = head;
+            head = next;
+        }
+        head = newHead;
+        tail = sentinelHead.next != null
+                ? new ListNode<>(sentinelHead.next.val)
+                : null;
+    }
+
     private void decSize() {
         size = Math.max(size - 1, 0);
     }
@@ -67,6 +83,10 @@ public class Queue<T> implements IQueue<T> {
 
         ListNode() {
             this(null, null);
+        }
+
+        ListNode(ListNode<T> next) {
+            this(null, next);
         }
 
         ListNode(T val) {
