@@ -69,6 +69,7 @@ public class Stack<T> implements IStack<T> {
         return this.size;
     }
 
+    @Override
     public synchronized void reverse() {
         ListNode<T> newHead = null;
         while (head != null) {
@@ -86,6 +87,7 @@ public class Stack<T> implements IStack<T> {
      * @param val find this value
      * @return position number of value or -1
      */
+    @Override
     public synchronized int find(T val) {
         int pos = -1;
         ListNode<T> sentinel = new ListNode<>(null, head);
@@ -102,6 +104,7 @@ public class Stack<T> implements IStack<T> {
         return pos;
     }
 
+    @Override
     public synchronized T peek() {
         if (size == 0 || MAX_SIZE == 0) {
             return null;
@@ -109,6 +112,7 @@ public class Stack<T> implements IStack<T> {
         return head.val;
     }
 
+    @Override
     public synchronized T peek(int index) {
         if (size == 0 || MAX_SIZE == 0 || index >= size || index < 0) {
             return null;

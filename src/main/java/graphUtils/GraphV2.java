@@ -1,5 +1,6 @@
 package graphUtils;
 
+import stack.genericStack.IStack;
 import stack.genericStack.Stack;
 import stack.genericStack.StackOverflowException;
 
@@ -14,7 +15,7 @@ public class GraphV2 {
     private int[][] g = null;
     private int[] p = null;
     private int[] used = null;
-    public Stack<Integer> topo = null;
+    public IStack<Integer> topo = null;
 
     private GraphV2() {
     }
