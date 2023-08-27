@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class Bor {
     public static final Bor INSTANCE = new Bor();
 
+    private volatile boolean isInit = false;
     private Node<String> root = new Node<>("root", "");
 
     private Bor() {
@@ -23,13 +24,40 @@ public class Bor {
         init(Arrays.stream(words).collect(Collectors.toList()));
     }
 
+    public void init(Collection<String> words) {
+        if (this.isInit) {
+            return;
+        }
+        root = new Node<>("root", "");
+        for (String word : words) {
+            addWord(word);
+        }
+        prepSuffixTree();
+        this.isInit = true;
+    }
+
     public Map<String, List<Integer>> findKeyWordsInText(String text) {
+        return findKeyWordsInText(text, Collections.emptyList());
+    }
+
+    public Map<String, List<Integer>> findKeyWordsInText(String text, String[] words) {
+        return findKeyWordsInText(text, Arrays.stream(words).collect(Collectors.toList()));
+    }
+
+    public Map<String, List<Integer>> findKeyWordsInText(String text, Collection<String> words) {
         Map<String, List<Integer>> wordAndPositionsMap = new HashMap<>();
+        if (Objects.equals(text, "")) {
+            return wordAndPositionsMap;
+        }
+        if (!this.isInit) {
+            if (words == null || words.size() < 1) {
+                return wordAndPositionsMap;
+            }
+            init(words);
+        }
         Node<String> cur = root;
         int pos = 0;
-        StringBuilder curProgressInText = new StringBuilder();
         for (char ch : text.toCharArray()) {
-            curProgressInText.append(ch);
             pos += 1;
             cur = findNodeByChar(cur, ch);
             if (cur == root) {
@@ -42,14 +70,6 @@ public class Bor {
             fillWordAndPositionsMap(wordAndPositionsMap, cur, pos);
         }
         return wordAndPositionsMap;
-    }
-
-    public void init(Collection<String> words) {
-        root = new Node<>("root", "");
-        for (String word : words) {
-            addWord(word);
-        }
-        prepSuffixTree();
     }
 
     public void dfs() {
@@ -97,8 +117,9 @@ public class Bor {
 
     /**
      * Поиск ноды с текущей буквой по прямому совпадению в потомках или по суффиксной ссылке
+     *
      * @param cur - текущая нода
-     * @param ch - символ из входного текста
+     * @param ch  - символ из входного текста
      * @return - нода, содержащая букву или root
      */
     private Node<String> findNodeByChar(Node<String> cur, char ch) {
@@ -113,12 +134,13 @@ public class Bor {
 
     /**
      * Заполнение коллекции для ответа на запрос анализа текста на предмет наличия ключевых слов
+     *
      * @param wordAndPositionsMap - хэш-мап с результатом (слово и позиции в тексте, в которых оно начинается)
-     * @param cur - текущая нода
-     * @param pos - позиция в тексте
+     * @param cur                 - текущая нода
+     * @param pos                 - позиция в тексте
      */
     private void fillWordAndPositionsMap(Map<String, List<Integer>> wordAndPositionsMap, Node<String> cur, int pos) {
-        for(Node<String> node : cur.goBySuffixLink) {
+        for (Node<String> node : cur.goBySuffixLink) {
             List<Integer> positions = wordAndPositionsMap.getOrDefault(node.prefix, new ArrayList<>());
             positions.add(pos - node.prefix.length());
             wordAndPositionsMap.putIfAbsent(node.prefix, positions);
@@ -145,6 +167,7 @@ public class Bor {
 
     /**
      * Формируем массив сжатых суффиксных ссылок (даст увеличение производительности при поиске)
+     *
      * @param cur - текущая нода
      */
     private void setGoBySuffixLink(Node<String> cur) {
