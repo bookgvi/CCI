@@ -23,14 +23,148 @@ public class Bor {
         init(Arrays.stream(words).collect(Collectors.toList()));
     }
 
+    public Map<String, List<Integer>> findKeyWordsInText(String text) {
+        Map<String, List<Integer>> wordAndPositionsMap = new HashMap<>();
+        Node<String> cur = root;
+        int pos = 0;
+        StringBuilder curProgressInText = new StringBuilder();
+        for (char ch : text.toCharArray()) {
+            curProgressInText.append(ch);
+            pos += 1;
+            cur = findNodeByChar(cur, ch);
+            if (cur == root) {
+                if (cur.children.get(String.valueOf(ch)) != null) {
+                    cur = cur.children.get(String.valueOf(ch));
+                } else {
+                    continue;
+                }
+            }
+            fillWordAndPositionsMap(wordAndPositionsMap, cur, pos);
+        }
+        return wordAndPositionsMap;
+    }
+
     public void init(Collection<String> words) {
         root = new Node<>("root", "");
         for (String word : words) {
             addWord(word);
         }
+        prepSuffixTree();
     }
 
-    public void addWord(String word) {
+    public void dfs() {
+        clearVisitedFlag(root);
+        proceedDFS(root);
+        System.out.println();
+    }
+
+    private void proceedDFS(Node<String> cur) {
+        Map<String, Node<String>> childrenMap = cur.children;
+        for (Map.Entry<String, Node<String>> childEntry : childrenMap.entrySet()) {
+            if (!childEntry.getValue().isVisited) {
+                String parent = childEntry.getValue().parent != null
+                        ? childEntry.getValue().parent.val
+                        : "";
+                System.out.print(parent + "->" + childEntry.getKey() + " ");
+                childEntry.getValue().isVisited = true;
+                proceedDFS(childEntry.getValue());
+            }
+        }
+    }
+
+    /**
+     * Преобразование бора в префикс-автомат. В каждой ноде будем хранить суффиксную ссылку на состояние, соответствующее
+     * максимальному суффиксу строки в текущей вершине.
+     */
+    private void prepSuffixTree() {
+        clearVisitedFlag(root);
+        IQueue<Node<String>> q = new Queue<>();
+        setRootSuffixLink();
+        q.add(root);
+        while (!q.empty()) {
+            Node<String> cur = q.poll();
+            Map<String, Node<String>> childrenMap = cur.children;
+            for (Map.Entry<String, Node<String>> childEntry : childrenMap.entrySet()) {
+                if (!childEntry.getValue().isVisited) {
+                    childEntry.getValue().isVisited = true;
+                    setSuffixLink(childEntry.getValue(), cur);
+                    q.add(childEntry.getValue());
+                }
+            }
+        }
+        setGoBySuffixLink(root);
+    }
+
+    /**
+     * Поиск ноды с текущей буквой по прямому совпадению в потомках или по суффиксной ссылке
+     * @param cur - текущая нода
+     * @param ch - символ из входного текста
+     * @return - нода, содержащая букву или root
+     */
+    private Node<String> findNodeByChar(Node<String> cur, char ch) {
+        String val = String.valueOf(ch);
+        if (cur.children.get(val) == null && cur.suffixLink.children.get(val) != null) {
+            return cur.suffixLink.children.get(val);
+        } else if (cur.children.get(val) != null) {
+            return cur.children.get(val);
+        }
+        return root;
+    }
+
+    /**
+     * Заполнение коллекции для ответа на запрос анализа текста на предмет наличия ключевых слов
+     * @param wordAndPositionsMap - хэш-мап с результатом (слово и позиции в тексте, в которых оно начинается)
+     * @param cur - текущая нода
+     * @param pos - позиция в тексте
+     */
+    private void fillWordAndPositionsMap(Map<String, List<Integer>> wordAndPositionsMap, Node<String> cur, int pos) {
+        for(Node<String> node : cur.goBySuffixLink) {
+            List<Integer> positions = wordAndPositionsMap.getOrDefault(node.prefix, new ArrayList<>());
+            positions.add(pos - node.prefix.length());
+            wordAndPositionsMap.putIfAbsent(node.prefix, positions);
+        }
+    }
+
+
+    private void setRootSuffixLink() {
+        root.suffixLink = root;
+        for (Map.Entry<String, Node<String>> rootChildEntry : root.children.entrySet()) {
+            rootChildEntry.getValue().suffixLink = root;
+        }
+    }
+
+    private void setSuffixLink(Node<String> cur, Node<String> parent) {
+        Node<String> parentSuffixLink = parent.suffixLink;
+        if (cur.suffixLink == null) {
+            cur.suffixLink = parentSuffixLink.children.get(cur.val);
+            if (cur.suffixLink == null) {
+                cur.suffixLink = root;
+            }
+        }
+    }
+
+    /**
+     * Формируем массив сжатых суффиксных ссылок (даст увеличение производительности при поиске)
+     * @param cur - текущая нода
+     */
+    private void setGoBySuffixLink(Node<String> cur) {
+        for (Map.Entry<String, Node<String>> childEntry : cur.children.entrySet()) {
+            fillGoBySuffixLink(childEntry.getValue(), childEntry.getValue().goBySuffixLink);
+            setGoBySuffixLink(childEntry.getValue());
+        }
+    }
+
+    private void fillGoBySuffixLink(Node<String> cur, List<Node<String>> goBySuffixLink) {
+        if (cur.isFinish) {
+            goBySuffixLink.add(cur);
+        }
+        if (Objects.equals(root, cur.suffixLink)) {
+            return;
+        }
+        fillGoBySuffixLink(cur.suffixLink, goBySuffixLink);
+    }
+
+    private void addWord(String word) {
         if (word == null) {
             return;
         }
@@ -51,51 +185,24 @@ public class Bor {
         cur.isFinish = true;
     }
 
-    public void bfs() {
-        IQueue<Node<String>> q = new Queue<>();
-        q.add(root);
-        System.out.println("BFS:");
-        while (!q.empty()) {
-            Node<String> cur = q.poll();
-            String parent = cur.parent != null
-                    ? cur.parent.val + "->"
-                    : "";
-            System.out.print(parent + cur.val + " ");
-            Map<String, Node<String>> childrenMap = cur.children;
-            for (Map.Entry<String, Node<String>> child : childrenMap.entrySet()) {
-                if (!child.getValue().isVisited) {
-                    child.getValue().isVisited = true;
-                    q.add(child.getValue());
-                }
-            }
+    private void clearVisitedFlag(Node<String> cur) {
+        cur.isVisited = false;
+        if (cur.isFinish) {
+            return;
         }
-        System.out.println();
-    }
-
-    public void dfs() {
-        dfs(root);
-        System.out.println();
-    }
-
-    private void dfs(Node<String> cur) {
-        Map<String, Node<String>> childrenMap = cur.children;
-        for (Map.Entry<String, Node<String>> child : childrenMap.entrySet()) {
-            if (!child.getValue().isVisited) {
-                String parent = child.getValue().parent != null
-                        ? child.getValue().parent.val
-                        : "";
-                System.out.print(parent + "->" + child.getKey() + " ");
-                child.getValue().isVisited = true;
-                dfs(child.getValue());
-            }
+        for (Map.Entry<String, Node<String>> childEntry : cur.children.entrySet()) {
+            clearVisitedFlag(childEntry.getValue());
         }
     }
 
+    ////////////////////////////////////////////////////////////////
     private static class Node<T> {
         T val;
         String prefix;
         Map<T, Node<T>> children = new HashMap<>();
         Node<T> parent;
+        Node<T> suffixLink;
+        List<Node<T>> goBySuffixLink = new ArrayList<>();
         boolean isFinish = false;
         boolean isVisited = false;
 

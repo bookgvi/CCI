@@ -2,6 +2,10 @@ package graphUtils;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 public class BorTest {
@@ -9,10 +13,15 @@ public class BorTest {
     public void visualTest() {
         Bor b = Bor.getInstance();
         String[] words = {"abc", "abd", "bca", "bcd", "test"};
+        String text = "absbsbcabctestest and test for keywords bcaandbcd";
         b.init(words);
         b.dfs();
-        b.init(words);
-        b.bfs();
+        Map<String, List<Integer>> res = b.findKeyWordsInText(text);
+        System.out.println("\nText: \""
+                +  text + "\", keywords: "
+                + Arrays.toString(words)
+                + "\n\t\tfound at positions: " + res + "\n"
+        );
     }
 
     @Test
