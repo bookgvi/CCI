@@ -12,8 +12,8 @@ public class BorTest {
     @Test
     public void visualTest() {
         Bor b = Bor.getInstance();
-        String[] words = {"abc", "abd", "bca", "bcd", "test"};
-        String text = "absbsbcabctestest and test for keywords bcaandbcd";
+        String[] words = {"dabc","abc", "bc"};
+        String text = "dabc";
 //        b.init(words);
 //        b.dfs();
         Map<String, List<Integer>> res = b.findKeyWordsInText(text, words);
