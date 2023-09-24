@@ -33,12 +33,14 @@ public class LongestStringChain {
             startChainWord = word;
             Set<String> chain = new HashSet<>();
             chain.add(startChainWord);
-            chainMap.put(startChainWord, chain);
-            orderedWordsInChain = new ArrayList<>();
-            orderedWordsInChain.add(startChainWord);
+            if (chainMap.get(startChainWord) == null) {
+                chainMap.put(startChainWord, chain);
+                orderedWordsInChain = new ArrayList<>();
+                orderedWordsInChain.add(startChainWord);
 
-            backtracking(startChainWord, words, 1, len);
-            i += 1;
+                backtracking(startChainWord, words, 1, len);
+                i += 1;
+            }
         }
         return maxSize;
     }

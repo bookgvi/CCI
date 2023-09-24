@@ -18,7 +18,7 @@ public class FactorizationTest {
     @Test
     public void testGetEulerFuncWhenPrimeNumberThenPrimeMinusOne() {
         // Arrange
-        int number = 17;
+        int number = (int) 1e5 + 3;
         factorization.getFactorization(number);
 
         // Act
