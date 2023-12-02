@@ -1,10 +1,24 @@
 package Hashing.numberTheory;
 
 import org.junit.Test;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
 public class GCDTest {
+
+    @Test
+    public void manualTest() {
+        GCD g = new GCD();
+        int a = 40;
+        int b = 32;
+        int gcd = g.getGCD(a, b);
+        assertEquals(8, gcd);
+
+        Factorization f = new Factorization();
+        Collection<Integer> fa = f.getFactorization(a);
+        Collection<Integer> fb = f.getFactorization(b);
+    }
 
     @Test
     public void testGetGCDWhenOneNumberIsPrimeThenReturnPrimeNumber() {
