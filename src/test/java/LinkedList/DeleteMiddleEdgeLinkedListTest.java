@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DeleteMiddleNodeLinkedListTest {
+public class DeleteMiddleEdgeLinkedListTest {
 
     private void assertEquals(ListNode l1, ListNode l2) {
         while (l1 != null && l2 != null) {
