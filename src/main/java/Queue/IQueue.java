@@ -1,6 +1,6 @@
-package Queue.simpleQueue;
+package Queue;
 
-public interface Queue<T> {
+public interface IQueue<T> {
     boolean add(T elt);
     boolean offer(T elt);
     T poll();
