@@ -1,10 +1,11 @@
 package Queue.simpleQueue;
 
+import Queue.IQueue;
 import lombok.*;
 
 import java.util.Objects;
 
-public class QueueImpl<T> implements Queue<T> {
+public class QueueImpl<T> implements IQueue<T> {
 
     private Entry<T> head;
     private Entry<T> tail;
@@ -56,6 +57,7 @@ public class QueueImpl<T> implements Queue<T> {
 
     public Entry<T> reverse() {
         Entry<T> sentinel = null;
+        tail = head;
         while (head != null) {
             Entry<T> tmp = head.next;
             head.next = sentinel;
@@ -63,10 +65,6 @@ public class QueueImpl<T> implements Queue<T> {
             head = tmp;
         }
         head = sentinel;
-        while(sentinel != null && sentinel.next != null) {
-            sentinel = sentinel.next;
-        }
-        tail = sentinel;
         return head;
     }
 
