@@ -61,7 +61,6 @@ public class MinimumJumps {
                         }
                     }
                 }
-                valToIndexMap.remove(arr[curIndex]);
             }
             count += 1;
         }

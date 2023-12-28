@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 
 import static org.junit.Assert.*;
 
-public class QueueTest {
+public class IQueueTest {
 
     @Test
     public void testPeekWhenQueueIsEmptyThenReturnNull() {

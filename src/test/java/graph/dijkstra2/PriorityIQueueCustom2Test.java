@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PriorityQueueCustom2Test {
+public class PriorityIQueueCustom2Test {
 
     private PriorityQueueCustom2<Integer> priorityQueue;
 
