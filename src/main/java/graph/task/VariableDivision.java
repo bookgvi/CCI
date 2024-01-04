@@ -1,6 +1,7 @@
 package graph.task;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * You are given an array of variable pairs equations and an array of real numbers values,
@@ -23,25 +24,93 @@ import java.util.*;
  * we can solve it by creating a graph and performing a Depth-First Search (DFS) to find the answer for each query. Here's a step-by-step approach:
  * 1) Create a class called VariableDivision to solve the problem.
  * 2) Inside the VariableDivision class, define a method called calcEquation that takes the equations, values,
- *          and queries as parameters and returns an array of doubles representing the answers to the queries.
+ * and queries as parameters and returns an array of doubles representing the answers to the queries.
  * 3) Create a map called variableToIndex to store the variable-to-index mapping. This map will help us assign a unique index to each variable.
  * 4) Create a list called adjacencyList to represent the graph.
- *          Each variable will be a node in the graph, and the edges will represent the division operation between variables.
+ * Each variable will be a node in the graph, and the edges will represent the division operation between variables.
  * 5) Iterate through the equations and values arrays. For each equation, add the variables and their corresponding values to the variableToIndex map.
  * 6) Iterate through the equations and values arrays again. For each equation, add two directed edges to the graph:
- *          one from Ai to Bi with weight values[i], and another from Bi to Ai with weight 1 / values[i].
+ * one from Ai to Bi with weight values[i], and another from Bi to Ai with weight 1 / values[i].
  * 7) Create a method called dfs that performs a Depth-First Search to find the answer for each query.
  * 8) Inside the dfs method, check if the source and destination variables exist in the graph. If not, return -1.0.
  * 9) If the source and destination variables are the same, return 1.0.
  * 10) Mark the source variable as visited and iterate through its neighbors. For each neighbor,
- *          recursively call the dfs method with the neighbor as the new source variable.
+ * recursively call the dfs method with the neighbor as the new source variable.
  * 11) Multiply the result of the recursive call by the weight of the edge between the source and neighbor variables.
- *          If the result is not -1.0, return it.
+ * If the result is not -1.0, return it.
  * 12) If no valid result is found, return -1.0.
  */
 class VariableDivision {
 
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        Map<String, Integer> variableToIndexMap = new HashMap<>();
+        List<List<Edge>> adjacencyList = new ArrayList<>();
+        AtomicInteger indexAtom = new AtomicInteger(-1);
+        for (int i = 0, len = equations.size(); i < len; i += 1) {
+            String variable1 = equations.get(i).get(0);
+            String variable2 = equations.get(i).get(1);
+
+            int index1 = variableToIndexMap.computeIfAbsent(variable1, (v) -> {
+                adjacencyList.add(new ArrayList<>());
+                return indexAtom.incrementAndGet();
+            });
+            int index2 = variableToIndexMap.computeIfAbsent(variable2, (v) -> {
+                adjacencyList.add(new ArrayList<>());
+                return indexAtom.incrementAndGet();
+            });
+            adjacencyList.get(index1).add(new Edge(index2, values[i]));
+            adjacencyList.get(index2).add(new Edge(index1, 1.0 / values[i]));
+        }
+        int qSize = queries.size();
+        double[] results = new double[qSize];
+        for (int i = 0; i < qSize; i += 1) {
+            String source = queries.get(i).get(0);
+            String destination = queries.get(i).get(1);
+            results[i] = dfs(source, destination, variableToIndexMap, adjacencyList, new HashSet<>());
+        }
+        return results;
+    }
+
+    private double dfs(
+            String source,
+            String destination,
+            Map<String, Integer> variableToIndexMap,
+            List<List<Edge>> adjacencyList,
+            HashSet<Object> visited
+    ) {
+        if (!variableToIndexMap.containsKey(source) || !variableToIndexMap.containsKey(destination)) {
+            return -1.0;
+        }
+        if (source.equals(destination)) {
+            return 1.0;
+        }
+        int sourceIndex = variableToIndexMap.get(source);
+        visited.add(sourceIndex);
+        for (Edge edge : adjacencyList.get(sourceIndex)) {
+            if (!visited.contains(edge.destination)) {
+                String newSource = getKeyByValue(variableToIndexMap, edge.destination);
+                double result = dfs(newSource, destination, variableToIndexMap, adjacencyList, visited);
+                if (result != -1.0) {
+                    return result * edge.weight;
+                }
+            }
+        }
+        return -1.0;
+    }
+
+    private String getKeyByValue(Map<String, Integer> variableToIndexMap, int value) {
+        for (Map.Entry<String, Integer> entry : variableToIndexMap.entrySet()) {
+            if (entry.getValue() == value) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public double[] calcEquation1(List<List<String>> equations, double[] values, List<List<String>> queries) {
         Map<String, Integer> variableToIndex = new HashMap<>();
         List<List<Edge>> adjacencyList = new ArrayList<>();
 
@@ -76,7 +145,7 @@ class VariableDivision {
         return results;
     }
 
-    private double dfs(
+    private double dfs1(
             String source,
             String destination,
             Map<String, Integer> variableToIndex,
@@ -100,7 +169,7 @@ class VariableDivision {
 //            Edge edge = adjacencyList.get(sourceIndex).get(j);
         for (Edge edge : adjacencyList.get(sourceIndex)) {
             if (!visited.contains(edge.destination)) {
-                double result = dfs(getKeyByValue(variableToIndex, edge.destination), destination, variableToIndex, adjacencyList, visited);
+                double result = dfs1(getKeyByValue(variableToIndex, edge.destination), destination, variableToIndex, adjacencyList, visited);
                 if (result != -1.0) {
                     return edge.weight * result;
                 }
@@ -110,7 +179,7 @@ class VariableDivision {
         return -1.0;
     }
 
-    private String getKeyByValue(Map<String, Integer> map, int value) {
+    private String getKeyByValue1(Map<String, Integer> map, int value) {
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             if (entry.getValue() == value) {
                 return entry.getKey();
