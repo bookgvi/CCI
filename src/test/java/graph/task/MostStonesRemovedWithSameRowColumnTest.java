@@ -7,11 +7,11 @@ import static org.junit.Assert.*;
 
 public class MostStonesRemovedWithSameRowColumnTest {
 
-    private MostStonesRemovedWithSameRowColumn.MostStonesRemovedWithSameRowColumnDJS m;
+    private MostStonesRemovedWithSameRowColumn_DJS_DFS.MostStonesRemovedWithSameRowColumnDJS m;
 
     @Before
     public void init() {
-        m = new MostStonesRemovedWithSameRowColumn.MostStonesRemovedWithSameRowColumnDJS();
+        m = new MostStonesRemovedWithSameRowColumn_DJS_DFS.MostStonesRemovedWithSameRowColumnDJS();
     }
 
     @Test

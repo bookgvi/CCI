@@ -2,7 +2,7 @@ package graph.task;
 
 import java.util.*;
 
-public class MostStonesRemovedWithSameRowColumn {
+public class MostStonesRemovedWithSameRowColumn_DJS_DFS {
 
     static class MostStonesRemovedWithSameRowColumnDJS {
 
