@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class CourseScheduleIVTest {
+public class CourseScheduleIVTest implements ListTests {
 
     private CourseScheduleIV c;
 
@@ -89,10 +89,4 @@ public class CourseScheduleIVTest {
         assertListEquals(expected, res);
     }
 
-    private void assertListEquals(List<Boolean> l1, List<Boolean> l2) {
-        assertEquals(l1.size(), l2.size());
-        for (int i = 0, n = l1.size(); i < n; ++i) {
-            assertEquals(l1.get(i), l2.get(i));
-        }
-    }
 }

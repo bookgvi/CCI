@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ReorderRoutesMakeAllPathsLeadCityZeroFlipEdgeTest {
+public class ReorderRoutesMakeAllPathsLeadCityZeroFlipNodeTest {
 
     private ReorderRoutesMakeAllPathsLeadCityZero_FlipEdge r;
 

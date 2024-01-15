@@ -3,7 +3,7 @@ package LinkedList;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ListEdgeTest {
+public class ListNodeTest {
 
     @Test
     public void from_test1() {

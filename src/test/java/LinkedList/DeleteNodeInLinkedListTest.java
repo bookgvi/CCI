@@ -2,7 +2,7 @@ package LinkedList;
 
 import org.junit.Test;
 
-public class DeleteEdgeInLinkedListTest {
+public class DeleteNodeInLinkedListTest {
 
     @Test
     public void deleteNode() {
