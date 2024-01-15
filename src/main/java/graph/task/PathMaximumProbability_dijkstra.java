@@ -77,4 +77,154 @@ public class PathMaximumProbability_dijkstra {
             return Objects.hash(dst, probability);
         }
     }
+
+    static class PriorityQueue<T> {
+        private final Comparator<? super T> comparator;
+        private int size;
+        private Object[] heap;
+
+        PriorityQueue() {
+            this(null);
+        }
+
+        PriorityQueue(int heapSize) {
+            this(heapSize, null);
+        }
+
+        PriorityQueue(Comparator<? super T> comparator) {
+            this(16, comparator);
+        }
+
+        PriorityQueue(int heapSize, Comparator<? super T> comparator) {
+            this.heap = new Object[heapSize];
+            this.comparator = comparator;
+        }
+
+        int getSize() {
+            return this.size;
+        }
+
+        boolean isEmpty() {
+            return this.size == 0;
+        }
+
+        boolean add(T val) {
+            return offer(val);
+        }
+
+        boolean offer(T val) {
+            int s = size++;
+            if (s >= heap.length) {
+                grow();
+            }
+            siftUp(val, s);
+            return true;
+        }
+
+        @SuppressWarnings("unchecked")
+        T poll() {
+            if (size == 0) {
+                return null;
+            }
+            int s = --size;
+            T returnVal = (T) heap[0];
+            T movedVal = (T) heap[s];
+            heap[s] = null;
+            if (s != 0) {
+                siftDown(movedVal, 0);
+            }
+            return returnVal;
+        }
+
+        private void siftDown(T val, int pos) {
+            if (comparator != null) {
+                siftDownComparator(val, pos);
+            } else {
+                siftDownComparable(val, pos);
+            }
+        }
+
+        private void siftUp(T val, int pos) {
+            if (comparator != null) {
+                siftUpComparator(val, pos);
+            } else {
+                siftUpComparable(val, pos);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        private void siftDownComparator(T val, int pos) {
+            int half = size >>> 1;
+            while (pos < half) {
+                int child = (pos << 1) + 1;
+                int r = child + 1;
+                Object childVal = heap[child];
+                if (r < size && comparator.compare((T) heap[r], (T) childVal) < 0) {
+                    childVal = heap[child = r];
+                }
+                if (comparator.compare(val, (T) childVal) <= 0) {
+                    break;
+                }
+                heap[pos] = childVal;
+                pos = child;
+            }
+            heap[pos] = val;
+        }
+
+        @SuppressWarnings("unchecked")
+        private void siftDownComparable(T val, int pos) {
+            Comparable<? super T> valC = (Comparable<? super T>) val;
+            int half = size >>> 1;
+            while (pos < half) {
+                int child = (pos << 1) + 1;
+                int r = child + 1;
+                Object childVal = heap[child];
+                Comparable<? super T> childValC = (Comparable<? super T>) childVal;
+                if (r < size && childValC.compareTo((T) heap[r]) > 0) {
+                    childVal = heap[child = r];
+                }
+                if (valC.compareTo((T) childVal) <= 0) {
+                    break;
+                }
+                heap[pos] = childVal;
+                pos = child;
+            }
+            heap[pos] = val;
+        }
+
+        @SuppressWarnings("unchecked")
+        private void siftUpComparable(T val, int pos) {
+            Comparable<? super T> valC = (Comparable<? super T>) val;
+            while (pos > 0) {
+                int parent = (pos - 1) >>> 1;
+                Object pVal = heap[parent];
+                if (valC.compareTo((T) pVal) >= 0) {
+                    break;
+                }
+                heap[pos] = pVal;
+                pos = parent;
+            }
+            heap[pos] = val;
+        }
+
+        @SuppressWarnings("unchecked")
+        private void siftUpComparator(T val, int pos) {
+            while (pos > 0) {
+                int parent = (pos - 1) >>> 1;
+                Object pVal = heap[parent];
+                if (comparator.compare(val, (T) pVal) >= 0) {
+                    break;
+                }
+                heap[pos] = pVal;
+                pos = parent;
+            }
+            heap[pos] = val;
+        }
+
+        private void grow() {
+            int size = heap.length;
+            int newSize = (size >>> 1) + size;
+            heap = Arrays.copyOf(heap, newSize);
+        }
+    }
 }
