@@ -33,7 +33,7 @@ public class SumSubarrayMinimumsTest {
     @Test
     public void sumSubarrayMins3() {
         int[] arr = {2,3,1,5,4};
-        int expected = 20;
+        int expected = 29;
         int res = s.sumSubarrayMins(arr);
         assertEquals(expected, res);
     }
