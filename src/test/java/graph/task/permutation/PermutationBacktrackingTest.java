@@ -14,6 +14,13 @@ public class PermutationBacktrackingTest {
     public void setUp() throws Exception {
     }
 
+    private int factorial(int n) {
+        if (n == 0 || n == 1) {
+            return 1;
+        }
+        return n * factorial(n - 1);
+    }
+
     @Test
     public void proceed() {
         PermutationBacktracking permutation = new PermutationBacktracking();
@@ -74,12 +81,7 @@ public class PermutationBacktrackingTest {
         assertEquals(factorial(n), result.size());
     }
 
-    private int factorial(int n) {
-        if (n == 0 || n == 1) {
-            return 1;
-        }
-        return n * factorial(n - 1);
-    }
+
 
     @Test
     public void testPermutationBacktrackingWithOne() {
