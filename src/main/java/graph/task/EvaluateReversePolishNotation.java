@@ -1,16 +1,28 @@
 package graph.task;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
+import java.util.function.BiFunction;
 
 public class EvaluateReversePolishNotation {
-    public int evaluateRPN(String[] tokens) {
+
+    private static final Map<String, BiFunction<Integer, Integer, Integer>> operations = new HashMap<>();
+    static {
+        operations.put("+", Integer::sum);
+        operations.put("-", (operand1, operand2) -> operand1 - operand2);
+        operations.put("*", (operand1, operand2) -> operand1 * operand2);
+        operations.put("/", (operand1, operand2) -> operand1 / operand2);
+    }
+
+    public int evalRPN(String[] tokens) {
         Stack<Integer> stack = new Stack<>();
 
         for (String token : tokens) {
-            if (isOperator(token)) {
+            if (operations.containsKey(token)) {
                 int operand2 = stack.pop();
                 int operand1 = stack.pop();
-                int result = performOperation(token, operand1, operand2);
+                int result = operations.get(token).apply(operand1, operand2);
                 stack.push(result);
             } else {
                 int operand = Integer.parseInt(token);
@@ -19,24 +31,5 @@ public class EvaluateReversePolishNotation {
         }
 
         return stack.pop();
-    }
-
-    private boolean isOperator(String token) {
-        return token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/");
-    }
-
-    private int performOperation(String operator, int operand1, int operand2) {
-        switch (operator) {
-            case "+":
-                return operand1 + operand2;
-            case "-":
-                return operand1 - operand2;
-            case "*":
-                return operand1 * operand2;
-            case "/":
-                return operand1 / operand2;
-            default:
-                throw new IllegalArgumentException("Invalid operator: " + operator);
-        }
     }
 }
