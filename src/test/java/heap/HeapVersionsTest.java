@@ -5,11 +5,11 @@ import org.junit.Test;
 
 import java.util.Comparator;
 
-public class HeapV7Test {
+public class HeapVersionsTest {
 
     @Test
     public void testAdd() {
-        HeapV7<Integer> heap = new HeapV7<>();
+        HeapV8<Integer> heap = new HeapV8<>();
         heap.add(5);
         heap.add(3);
         heap.add(7);
