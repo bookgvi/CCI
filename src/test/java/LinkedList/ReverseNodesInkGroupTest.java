@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.util.Map;
 
+import static org.junit.Assert.assertTrue;
+
 public class ReverseNodesInkGroupTest {
     private void assertEquals(ListNode l1, ListNode l2) {
         while (l1 != null && l2 != null) {
@@ -74,4 +76,20 @@ public class ReverseNodesInkGroupTest {
         Map<ListNode, ListNode> reverseHeadAndTailMap = r.reverse(l1);
         assertEquals(ans, reverseHeadAndTailMap.keySet().iterator().next());
     }
+
+    @Test
+    public void testEmptyList() {
+        ListNode head = null;
+        Map<ListNode, ListNode> result = new ReverseNodesInkGroup().reverse(head);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testSingleListNode() {
+        ListNode head = new ListNode(1);
+        Map<ListNode, ListNode> result = new ReverseNodesInkGroup().reverse(head);
+        assertEquals(head, result.keySet().iterator().next());
+        assertEquals(head, result.values().iterator().next());
+    }
+
 }

@@ -67,7 +67,30 @@ public class ReverseNodesInkGroup {
         return res;
     }
 
-    public Map<ListNode, ListNode> reverse(ListNode head) {
+    /**
+     * Reverses a linked list and returns a map with the reversed list and the head sentinel.
+     *
+     * @param  head  the head of the linked list to be reversed
+     * @return       a map containing the reversed list and the lastNode in the list
+     */public Map<ListNode, ListNode> reverse(ListNode head) {
+        Map<ListNode, ListNode> result = new HashMap<>();
+        if (head == null) {
+            return result;
+        }
+        ListNode reverse = null;
+        ListNode headSentinel = new ListNode(-1, head);
+        while (head != null) {
+            ListNode tmpNext = head.next;
+            head.next = reverse;
+            reverse = head;
+            head = tmpNext;
+        }
+        result.put(reverse, headSentinel.next);
+        return result;
+    }
+
+
+    public Map<ListNode, ListNode> reverse_old(ListNode head) {
         Map<ListNode, ListNode> headAndTailNodes = new HashMap<>();
         ListNode reverseHead = head;
         ListNode lastNode = head;
