@@ -9,6 +9,11 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.LinkedList;
 
+/**
+ * A class implementing the Aho-Corasick algorithm for string matching.
+ * The algorithm efficiently searches for multiple patterns in a given text.
+ * It builds a state machine based on the provided keywords and uses it to find occurrences in the text.
+ */
 public class AhoCorasick {
     private final int ABC = 2000;
     private final int MAX_STATE;
@@ -27,6 +32,12 @@ public class AhoCorasick {
         out = new int[MAX_STATE];
     }
 
+    /**
+     * Builds the state machine for the Aho-Corasick algorithm using the provided keywords.
+     * Initializes the state transitions, suffix links, and outputs for each keyword.
+     *
+     * @param keyWords an array of keywords to build the state machine with
+     */
     private void buildStateMachine(String[] keyWords) {
         int wordsCount = keyWords.length;
         for (int i = 0; i < MAX_STATE; ++i) {
@@ -75,6 +86,13 @@ public class AhoCorasick {
         }
     }
 
+    /**
+     * Returns the next state in the Aho-Corasick state machine based on the current state and the input character.
+     *
+     * @param state the current state in the state machine
+     * @param ch the input character to transition to the next state
+     * @return the next state after transitioning from the current state with the input character
+     */
     private int nextState(int state, int ch) {
         int ans = state;
         while (g[ans][ch] == -1) {
@@ -83,6 +101,12 @@ public class AhoCorasick {
         return g[ans][ch];
     }
 
+    /**
+     * Searches for the occurrences of keywords in the given text using the Aho-Corasick algorithm.
+     *
+     * @param text the text in which to search for keywords
+     * @return a map where each keyword found in the text is mapped to a list of indexes where it starts
+     */
     public Map<String, List<Integer>> searchWords(String text) {
         text = Optional.ofNullable(text).orElse("");
         Map<String, List<Integer>> res = new HashMap<>();
