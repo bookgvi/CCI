@@ -8,6 +8,7 @@ public class TextInfo {
 
     private String path;
     private String text;
+    private int lineStartIndex = 0;
     private final Map<Integer, String> indexToTextMap = new LinkedHashMap<>();
     private final Map<Integer, Integer> indexToLineMap = new LinkedHashMap<>();
 
@@ -29,6 +30,14 @@ public class TextInfo {
 
     public String getText() {
         return Optional.ofNullable(text).orElse("");
+    }
+
+    public int getLineStartIndex() {
+        return lineStartIndex;
+    }
+
+    public void setLineStartIndex(int lineStartIndex) {
+        this.lineStartIndex = lineStartIndex;
     }
 
     public Map<Integer, String> getIndexToTextMap() {

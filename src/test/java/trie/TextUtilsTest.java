@@ -17,15 +17,20 @@ public class TextUtilsTest {
 
         String text = textDto.getText();
         AhoCorasick trie = new AhoCorasick(new String[]{"class"});
+//        AhoCorasick trie = new AhoCorasick(new String[]{"!indexesStack.isEmpty()"});
         Map<String, List<Integer>> textToIndexesMap = trie.searchWords(text);
 
         List<TextInfo> textInfoList = new ArrayList<>();
+        List<TextInfo> blockInfoList = new ArrayList<>();
         for (List<Integer> indexes : textToIndexesMap.values()) {
             for (int index : indexes) {
                 TextInfo lineDto = textUtils.getLineByIndex(textDto, index);
                 textInfoList.add(lineDto);
+                TextInfo blockInfo = textUtils.getBlockStartedAtIndex(textDto, index);
+                blockInfoList.add(blockInfo);
             }
         }
         Assert.assertFalse(textInfoList.isEmpty());
+        Assert.assertFalse(blockInfoList.isEmpty());
     }
 }

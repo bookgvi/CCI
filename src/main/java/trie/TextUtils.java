@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Stack;
+import java.util.stream.Stream;
 
 final class TextUtils {
 
@@ -18,24 +21,10 @@ final class TextUtils {
      */
     public TextInfo getTextFromFile(String path) {
         TextInfo res = new TextInfo();
-        res.setPath(path);
         Path filePath = Paths.get(path);
         try (BufferedReader bufferedReader = Files.newBufferedReader(filePath)) {
-            StringBuilder sb = new StringBuilder();
-            final int[] index = {0};
-            final int[] lineNum = {1};
-            Map<Integer, String> indexToTextMap = res.getIndexToTextMap();
-            Map<Integer, Integer> indexToLineMap = res.getIndexToLineMap();
-            bufferedReader.lines().forEach(line -> {
-                if (!line.isEmpty()) {
-                    sb.append(line);
-                    indexToTextMap.put(index[0], line);
-                    indexToLineMap.put(index[0], lineNum[0]);
-                    index[0] = index[0] + line.length();
-                }
-                lineNum[0] += 1;
-            });
-            res.setText(sb.toString());
+            res = buildTextInfo(bufferedReader.lines());
+            res.setPath(path);
         } catch (IOException ignored) {
             // ignore
         }
@@ -72,8 +61,72 @@ final class TextUtils {
         String resultText = indexToTextMap.getOrDefault(resultIndex, "");
         int lineNum = textInfo.getIndexToLineMap().getOrDefault(resultIndex, -1);
         res.setText(resultText);
+        res.setLineStartIndex(resultIndex);
         res.getIndexToTextMap().put(resultIndex, resultText);
         res.getIndexToLineMap().put(resultIndex, lineNum);
+        return res;
+    }
+
+    public TextInfo getBlockStartedAtIndex(TextInfo textInfo, int beginIndex) {
+        TextInfo res = new TextInfo();
+        String text = textInfo.getText();
+        TextInfo lineInfo = getLineByIndex(textInfo, beginIndex);
+        beginIndex = lineInfo.getLineStartIndex();
+        String lineText = Optional.ofNullable(lineInfo.getText()).orElse("");
+        res.setPath(textInfo.getPath());
+        if (!lineText.contains("{")) {
+            return res;
+        }
+        Stack<Integer> indexesStack = new Stack<>();
+        int endIndex = beginIndex;
+        while (text.charAt(endIndex) != '{') {
+            endIndex += 1;
+        }
+        indexesStack.push(endIndex);
+        endIndex += 1;
+        for (int len = text.length(); endIndex < len && !indexesStack.isEmpty(); ++endIndex) {
+            if (endIndex > 0 && text.charAt(endIndex - 1) != '\'' && text.charAt(endIndex - 1) != '\"' && text.charAt(endIndex) == '{') {
+                indexesStack.push(endIndex);
+            } else if (text.charAt(endIndex) == '}' && endIndex + 1 < len && text.charAt(endIndex + 1) != '\'' && text.charAt(endIndex + 1) != '\"' ) {
+                indexesStack.pop();
+            } else if (text.charAt(endIndex) == '}' && endIndex + 1 == len) {
+                indexesStack.pop();
+            }
+        }
+        if (indexesStack.isEmpty()) {
+            int nextIndex = beginIndex;
+            StringBuilder sb = new StringBuilder();
+            while (nextIndex < endIndex) {
+                String lineTxt = textInfo.getIndexToTextMap().get(nextIndex);
+                if (lineTxt != null) {
+                    sb.append(lineTxt);
+                    res.getIndexToTextMap().put(nextIndex, lineTxt);
+                    nextIndex += lineTxt.length();
+                }
+            }
+            String blockText = sb.toString();
+            res.setText(blockText);
+            res.setLineStartIndex(beginIndex);
+        }
+        return res;
+    }
+
+    private TextInfo buildTextInfo(Stream<String> lines) {
+        TextInfo res = new TextInfo();
+        StringBuilder sb = new StringBuilder();
+        final int[] index = {0};
+        final int[] lineNum = {1};
+        Map<Integer, String> indexToTextMap = res.getIndexToTextMap();
+        Map<Integer, Integer> indexToLineMap = res.getIndexToLineMap();
+        String newLine = System.lineSeparator();
+        lines.forEach(line -> {
+            sb.append(line);
+            indexToTextMap.put(index[0], line);
+            indexToLineMap.put(index[0], lineNum[0]);
+            index[0] += line.length();
+            lineNum[0] += 1;
+        });
+        res.setText(sb.toString());
         return res;
     }
 }
