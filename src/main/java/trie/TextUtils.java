@@ -118,8 +118,8 @@ final class TextUtils {
         final int[] lineNum = {1};
         Map<Integer, String> indexToTextMap = res.getIndexToTextMap();
         Map<Integer, Integer> indexToLineMap = res.getIndexToLineMap();
-        String newLine = System.lineSeparator();
         lines.forEach(line -> {
+            line = line.trim();
             sb.append(line);
             indexToTextMap.put(index[0], line);
             indexToLineMap.put(index[0], lineNum[0]);
